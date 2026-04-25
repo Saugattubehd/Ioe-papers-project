@@ -59,3 +59,11 @@ app.listen(PORT, () => {
   console.log(`📁 Uploads directory: ${path.resolve(uploadDir)}`);
   console.log(`🌍 Environment: ${process.env.NODE_ENV || 'development'}\n`);
 });
+app.get('/api/test-db', async (req, res) => {
+  try {
+    const result = await pool.query('SELECT COUNT(*) FROM users');
+    res.json({ ok: true, userCount: result.rows[0].count });
+  } catch (err) {
+    res.status(500).json({ ok: false, error: err.message });
+  }
+});
