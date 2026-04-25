@@ -1,0 +1,53 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ioe_papers
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: changeme123
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./backend/db/schema.sql:/docker-entrypoint-initdb.d/schema.sql
+
+  backend:
+    build: ./backend
+    restart: unless-stopped
+    depends_on:
+      - db
+    environment:
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_NAME: ioe_papers
+      DB_USER: postgres
+      DB_PASSWORD: changeme123
+      JWT_SECRET: change-this-super-secret-jwt-key-in-production
+      JWT_EXPIRES_IN: 7d
+      PORT: 5000
+      NODE_ENV: production
+      UPLOAD_DIR: /app/uploads
+      ADMIN_SECRET_PATH: secret-admin-panel-7x9k2m
+      FRONTEND_URL: http://localhost:3000
+    ports:
+      - "5000:5000"
+    volumes:
+      - uploads:/app/uploads
+
+  frontend:
+    build: ./frontend
+    restart: unless-stopped
+    depends_on:
+      - backend
+    environment:
+      REACT_APP_API_URL: http://localhost:5000/api
+      REACT_APP_ADMIN_PATH: secret-admin-panel-7x9k2m
+    ports:
+      - "3000:80"
+
+volumes:
+  pgdata:
+  uploads:

@@ -1,0 +1,14 @@
+{
+  "name": "ioe-papers",
+  "version": "1.0.0",
+  "description": "IOE Past Year Papers — Full Stack Application",
+  "scripts": {
+    "install:all": "cd backend && npm install && cd ../frontend && npm install",
+    "dev:backend": "cd backend && npm run dev",
+    "dev:frontend": "cd frontend && npm start",
+    "docker:up": "docker-compose up --build",
+    "docker:down": "docker-compose down",
+    "docker:reset": "docker-compose down -v && docker-compose up --build"
+  },
+  "keywords": ["ioe", "nepal", "engineering", "past-papers", "education"]
+}
